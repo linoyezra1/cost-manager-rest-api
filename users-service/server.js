@@ -178,23 +178,32 @@ app.get('/api/users/:id', async function getUserDetails(req, res) {
 });
 
 /**
- * Connect to MongoDB Atlas and start listening.
+ * Health check so Railway / browsers can verify the process is alive.
+ */
+app.get(['/', '/health'], function health(req, res) {
+  return res.status(200).json({ ok: true, service: 'users-service' });
+});
+
+/**
+ * Start HTTP first (Railway needs an open port), then connect MongoDB.
  */
 async function startServer() {
-  // Ensure the connection string is configured
-  if (!process.env.MONGODB_URI) {
-    console.error('MONGODB_URI is missing from environment variables');
-    process.exit(1);
-  }
-
-  // Connect to the shared MongoDB Atlas database
-  await mongoose.connect(process.env.MONGODB_URI);
-  console.log('users-service connected to MongoDB');
-
-  // Start the HTTP server
-  app.listen(PORT, function onListen() {
+  // Bind to 0.0.0.0 so Railway's proxy can reach this process
+  app.listen(PORT, '0.0.0.0', function onListen() {
     console.log('users-service listening on port ' + PORT);
   });
+
+  if (!process.env.MONGODB_URI) {
+    console.error('WARNING: MONGODB_URI is missing - user endpoints will fail until it is set');
+    return;
+  }
+
+  try {
+    await mongoose.connect(process.env.MONGODB_URI);
+    console.log('users-service connected to MongoDB');
+  } catch (err) {
+    console.error('MongoDB connection failed:', err.message);
+  }
 }
 
 // Boot only when this file is executed directly (not when required by tests)

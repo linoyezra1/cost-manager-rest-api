@@ -73,21 +73,33 @@ app.get(['/api/about', '/api/about/'], async function getAbout(req, res) {
 });
 
 /**
- * Connect to MongoDB (for logging) and start listening.
+ * Health check so Railway / browsers can verify the process is alive.
+ */
+app.get(['/', '/health'], function health(req, res) {
+  return res.status(200).json({ ok: true, service: 'about-service' });
+});
+
+/**
+ * Start HTTP first (Railway needs an open port), then connect MongoDB for logs.
  */
 async function startServer() {
-  // MongoDB is still required so request logs can be written
-  if (!process.env.MONGODB_URI) {
-    console.error('MONGODB_URI is missing from environment variables');
-    process.exit(1);
-  }
-
-  await mongoose.connect(process.env.MONGODB_URI);
-  console.log('about-service connected to MongoDB');
-
-  app.listen(PORT, function onListen() {
+  // Bind to 0.0.0.0 so Railway's proxy can reach this process
+  app.listen(PORT, '0.0.0.0', function onListen() {
     console.log('about-service listening on port ' + PORT);
   });
+
+  // Connect to MongoDB in the background (needed for Pino log persistence)
+  if (!process.env.MONGODB_URI) {
+    console.error('WARNING: MONGODB_URI is missing - HTTP works but logs will not be saved');
+    return;
+  }
+
+  try {
+    await mongoose.connect(process.env.MONGODB_URI);
+    console.log('about-service connected to MongoDB');
+  } catch (err) {
+    console.error('MongoDB connection failed (service still serving /api/about):', err.message);
+  }
 }
 
 // Boot only when this file is executed directly (not when required by tests)

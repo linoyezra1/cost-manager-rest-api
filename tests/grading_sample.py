@@ -20,10 +20,10 @@ filename = input("filename=")
 # The third will handle all cost-related tasks. (c)
 # The fourth will handle any admin-related tasks (e.g. developers details) (d)
 
-a = "http://localhost:3001"
-b = "http://localhost:3002"
-c = "http://localhost:3003"
-d = "http://localhost:3004"
+a = "https://logs-service-production-9f45.up.railway.app"
+b = "https://users-service-production-9a37.up.railway.app"
+c = "https://costs-service-production.up.railway.app"
+d = "https://about-service-production.up.railway.app"
 
 output = open(filename, "w", encoding="utf-8")
 sys.stdout = output

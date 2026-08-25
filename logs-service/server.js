@@ -67,20 +67,32 @@ app.get(['/api/logs', '/api/logs/'], async function listLogs(req, res) {
 });
 
 /**
- * Connect to MongoDB Atlas and start listening.
+ * Health check so Railway / browsers can verify the process is alive.
+ */
+app.get(['/', '/health'], function health(req, res) {
+  return res.status(200).json({ ok: true, service: 'logs-service' });
+});
+
+/**
+ * Start HTTP first (Railway needs an open port), then connect MongoDB.
  */
 async function startServer() {
-  if (!process.env.MONGODB_URI) {
-    console.error('MONGODB_URI is missing from environment variables');
-    process.exit(1);
-  }
-
-  await mongoose.connect(process.env.MONGODB_URI);
-  console.log('logs-service connected to MongoDB');
-
-  app.listen(PORT, function onListen() {
+  // Bind to 0.0.0.0 so Railway's proxy can reach this process
+  app.listen(PORT, '0.0.0.0', function onListen() {
     console.log('logs-service listening on port ' + PORT);
   });
+
+  if (!process.env.MONGODB_URI) {
+    console.error('WARNING: MONGODB_URI is missing - /api/logs will fail until it is set');
+    return;
+  }
+
+  try {
+    await mongoose.connect(process.env.MONGODB_URI);
+    console.log('logs-service connected to MongoDB');
+  } catch (err) {
+    console.error('MongoDB connection failed:', err.message);
+  }
 }
 
 // Boot only when this file is executed directly (not when required by tests)
