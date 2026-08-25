@@ -1,24 +1,15 @@
 # Sample grading-style test (Python), based on the course document.
-# Fill in a, b, c, d with your four Railway (or local) base URLs.
-#
-# a = logs-service
-# b = users-service
-# c = costs-service
-# d = about-service
+# a = logs | b = users | c = costs | d = about
 #
 # Usage:
 #   python tests/grading_sample.py
-#   (then enter an output filename when prompted)
+# When prompted for filename, use something like: out.txt
+# DO NOT type tests/grading_sample.py (that overwrites this script!)
 
 import requests
 import sys
 
 filename = input("filename=")
-
-# The first will handle the logs. (a)
-# The second will handle all user-related tasks. (b)
-# The third will handle all cost-related tasks. (c)
-# The fourth will handle any admin-related tasks (e.g. developers details) (d)
 
 a = "https://logs-service-production-9f45.up.railway.app"
 b = "https://users-service-production-9a37.up.railway.app"

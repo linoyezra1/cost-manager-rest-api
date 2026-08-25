@@ -17,7 +17,7 @@ const { requestLogger, logEndpointAccess } = require('./middleware/logger');
 const app = express();
 
 // Read the listening port from environment (Railway sets PORT automatically)
-const PORT = process.env.PORT || 3003;
+const PORT = process.env.PORT || 8080;
 
 // Enable CORS so the grading test script can call this service
 app.use(cors());

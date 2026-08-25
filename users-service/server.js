@@ -16,7 +16,7 @@ const { requestLogger, logEndpointAccess } = require('./middleware/logger');
 const app = express();
 
 // Read the listening port from environment
-const PORT = process.env.PORT || 3002;
+const PORT = process.env.PORT || 8080;
 
 // Enable CORS for external test clients
 app.use(cors());
