@@ -1,0 +1,26 @@
+{
+  "name": "cost-manager",
+  "version": "1.0.0",
+  "description": "Cost Manager RESTful Web Services - 4 microservices root workspace",
+  "private": true,
+  "scripts": {
+    "install:all": "npm install --prefix logs-service && npm install --prefix users-service && npm install --prefix costs-service && npm install --prefix about-service && npm install",
+    "seed": "node seed.js",
+    "start:logs": "npm start --prefix logs-service",
+    "start:users": "npm start --prefix users-service",
+    "start:costs": "npm start --prefix costs-service",
+    "start:about": "npm start --prefix about-service",
+    "start:all": "npx concurrently -n logs,users,costs,about -c blue,green,yellow,magenta \"npm run start:logs\" \"npm run start:users\" \"npm run start:costs\" \"npm run start:about\"",
+    "test": "node --test tests/api.test.js",
+    "test:grading": "python tests/grading_sample.py"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "mongoose": "^8.9.0"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0",
+    "mongodb-memory-server": "^10.1.2",
+    "supertest": "^7.0.0"
+  }
+}
