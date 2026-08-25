@@ -1,0 +1,36 @@
+a=https://logs-service-production-9f45.up.railway.app
+b=https://users-service-production-9a37.up.railway.app
+c=https://costs-service-production.up.railway.app
+d=https://about-service-production.up.railway.app
+
+testing getting the about
+-------------------------
+url=https://about-service-production.up.railway.app/api/about/
+data.status_code=502
+b'{"status":"error","code":502,"message":"Application failed to respond","request_id":"lI2NKn0MSCmKdO0tVOLIQQ"}'
+data.text={"status":"error","code":502,"message":"Application failed to respond","request_id":"lI2NKn0MSCmKdO0tVOLIQQ"}
+{'status': 'error', 'code': 502, 'message': 'Application failed to respond', 'request_id': 'lI2NKn0MSCmKdO0tVOLIQQ'}
+
+
+testing getting the report - 1
+------------------------------
+url=https://costs-service-production.up.railway.app/api/report/?id=123123&year=2026&month=1
+data.status_code=200
+b'{"userid":123123,"year":2026,"month":1,"costs":[{"food":[]},{"education":[]},{"health":[]},{"housing":[]},{"sport":[]}]}'
+data.text={"userid":123123,"year":2026,"month":1,"costs":[{"food":[]},{"education":[]},{"health":[]},{"housing":[]},{"sport":[]}]}
+
+
+testing adding cost item
+----------------------------------
+url=https://costs-service-production.up.railway.app/api/add/
+data.status_code=404
+b'{"id":"USER_NOT_FOUND","message":"user with the given userid does not exist"}'
+
+
+testing getting the report - 2
+------------------------------
+url=https://costs-service-production.up.railway.app/api/report/?id=123123&year=2026&month=5
+data.status_code=200
+b'{"userid":123123,"year":2026,"month":5,"costs":[{"food":[]},{"education":[]},{"health":[]},{"housing":[]},{"sport":[]}]}'
+data.text={"userid":123123,"year":2026,"month":5,"costs":[{"food":[]},{"education":[]},{"health":[]},{"housing":[]},{"sport":[]}]}
+
