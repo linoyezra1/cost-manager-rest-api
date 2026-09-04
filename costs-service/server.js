@@ -173,8 +173,8 @@ app.post(['/api/add', '/api/add/'], async function addCost(req, res) {
     }
 
     // Validate that sum is a finite number (Double)
-    if (typeof sum !== 'number' || Number.isNaN(sum) || !Number.isFinite(sum)) {
-      return sendError(res, 400, 'INVALID_SUM', 'sum is required and must be a number');
+    if (typeof sum !== 'number' || Number.isNaN(sum) || !Number.isFinite(sum) || sum <= 0) {
+      return sendError(res, 400, 'INVALID_SUM', 'sum is required and must be a positive number');
     }
 
     // Verify the user exists in the users collection
